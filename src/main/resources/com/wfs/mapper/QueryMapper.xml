@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="com.wfs.mapper.QueryMapper">
+
+
+
+
+    <!--Emp queryEmpByName(String name);-->
+<select id="queryEmpByName"  resultType="Emp">
+
+
+       select * from emp where name = #{name}
+
+</select>
+
+    <!--List<Emp> queryAllEmp();-->
+    <select id="queryAllEmp" resultType="emp">
+        select * from emp
+    </select>
+
+    <!--void checkLogin(String name,String password);-->
+    <select id="checkLogin" resultType="int">
+    <!-- select * from emp where name=#{param1} and password=#{param2}-->
+
+        select * from emp where name='${name}' and password='${pwd}'
+
+    </select>
+
+    <!--int checkLoginByMap(Map map);-->
+    <select id="checkLoginByMap" resultType="int">
+        select * from emp where name=#{name} and password=#{password}
+    </select>
+
+
+    <!--int insertEmp(Emp emp);-->
+    <insert id="insertEmp">
+        insert into emp  values(null,#{name},#{age},#{email},#{sex},#{password})
+    </insert>
+
+
+
+
+
+
+
+
+
+    <resultMap id="resultMap" type="student">
+        <id property="sid" column="sid"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="tel" column="tel"></result>
+    </resultMap>
+    <!--void getAllStudent();-->
+    <select id="getAllStudent" resultMap="resultMap">
+      <!-- select sid, stu_name stuName,age,sex,tel  from student-->
+            select * from student
+    </select>
+
+
+
+    <resultMap id="getStudentAndGradeResultMap1" type="student">
+        <id property="sid" column="sid"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="tel" column="tel"></result>
+
+        <result property="grade.gid" column="gid"></result>
+        <result property="grade.gName" column="g_name"></result>
+
+    </resultMap>
+
+    <resultMap id="getStudentAndGradeResultMap2" type="student">
+        <id property="sid" column="sid"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="tel" column="tel"></result>
+
+        <association property="grade" javaType="grade">
+            <id property="gid" column="gid"></id>
+            <result property="gName" column="g_name"></result>
+        </association>
+
+    </resultMap>
+    <!-- Student getStudentAndGrade(@Param("sid") Integer sid);-->
+    <select id="getStudentAndGrade" resultMap="getStudentAndGradeResultMap2">
+        select * from student left join grade on student.gid= grade.gid  where sid=#{sid}
+    </select>
+
+
+
+
+
+    <resultMap id="getStudentAndGradeByStep1" type="student">
+        <id property="sid" column="sid"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="tel" column="tel"></result>
+        <association property="grade" column="gid" select="com.wfs.mapper.QueryMapper.getStudentAndGradeByStep2"></association>
+    </resultMap>
+    <!--Student getStudentAndGradeByStep1(@Param("sid") Integer sid);-->
+    <select id="getStudentAndGradeByStep1" resultMap="getStudentAndGradeByStep1">
+        select * from student where sid=#{sid}
+    </select>
+
+
+    <!--Grade getStudentAndGradeByStep2(@Param("gid") Integer gid);-->
+    <select id="getStudentAndGradeByStep2"    resultType="grade">
+        select * from grade where gid=#{gid}
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <resultMap id="getGradeAndStudentResultMap1" type="grade">
+        <id property="gid" column="gid"></id>
+        <result property="gName" column="g_name"></result>
+        <collection property="list" ofType="student">
+            <id property="sid" column="sid"></id>
+            <result property="stuName" column="stu_name"></result>
+            <result property="age" column="age"></result>
+            <result property="sex" column="sex"></result>
+            <result property="tel" column="tel"></result>
+        </collection>
+
+    </resultMap>
+    <!-- Grade getGradeAndStudent(@Param("gid") Integer gid);-->
+    <select id="getGradeAndStudent" resultMap="getGradeAndStudentResultMap1">
+        select * from grade left join student on grade.gid=student.gid where grade.gid=#{gid}
+    </select>
+
+
+
+    <resultMap id="getGradeAndStudentResultMap2" type="grade">
+        <id property="gid" column="gid"></id>
+        <result property="gName" column="g_name"></result>
+        <collection property="list" column="gid" select="com.wfs.mapper.QueryMapper.getGradeAndStudentByStep2">
+        </collection>
+    </resultMap>
+    <!-- Grade getGradeAndStudentByStep1(@Param("gid") Integer gid);-->
+    <select id="getGradeAndStudentByStep1" resultMap="getGradeAndStudentResultMap2">
+        select * from grade where gid=#{gid}
+    </select>
+
+
+
+    <resultMap id="getGradeAndStudentResultMap3" type="student">
+    <id property="sid" column="sid"></id>
+    <result property="stuName" column="stu_name"></result>
+    <result property="age" column="age"></result>
+    <result property="sex" column="sex"></result>
+    <result property="tel" column="tel"></result>
+    </resultMap>
+    <!--List<Student> getGradeAndStudentByStep2(@Param("gid") Integer gid);-->
+    <select id="getGradeAndStudentByStep2" resultMap="getGradeAndStudentResultMap3">
+        select * from student where gid=#{gid}
+    </select>
+
+
+
+    <!-- Student getStudentByName(@Param("stuName") String name);-->
+    <select id="getStudentByName" resultType="student">
+
+        select * from student where stu_name like concat('%',#{stuName},'%')
+    </select>
+
+
+    <!--int deleteStudentsByIds(@Param("ids") String ids);-->
+    <delete id="deleteStudentsByIds" >
+        delete from student  where sid in (${ids})
+    </delete>
+
+    <!--Student getStudentByTableName(@Param("tableName") String tableName);-->
+    <select id="getStudentByTableName" resultType="student">
+        select * from ${tableName}  where sid=1
+    </select>
+
+
+
+
+    <!--List<Student>  getStudentByIf( Student student);-->
+    <select id="getStudentByIf" resultType="student" >
+        select * from  student where  1=1
+        <if test="stuName !='' and stuName != null">
+          and  stu_name=#{stuName}
+        </if>
+
+        <if test="age !='' and age!= null">
+           and age=#{age}
+        </if>
+    </select>
+
+
+    <!--List<Student>  getStudentByWhere( Student student);-->
+    <select id="getStudentByWhere" resultType="student">
+        select * from student
+     <where>
+         <if test="stuName !='' and stuName != null">
+             and  stu_name=#{stuName}
+         </if>
+
+         <if test="age !='' and age!= null">
+             and age=#{age}
+         </if>
+     </where>
+    </select>
+
+
+    <!-- List<Student>  getStudentByTrim( Student student);-->
+    <select id="getStudentByTrim" resultType="student">
+        select * from student
+
+            <trim prefix="where" suffixOverrides="and|or">
+
+                <if test="stuName !='' and stuName != null">
+                    stu_name=#{stuName} and
+                </if>
+
+                <if test="age !='' and age!= null">
+                   age=#{age}   and
+                </if>
+            </trim>
+
+    </select>
+
+
+
+    <!--List<Student>  getStudentByCWO( Student student);-->
+    <select id="getStudentByCWO" resultType="student">
+        select * from student where
+        <choose>
+            <when test="stuName !='' and stuName!=null ">
+                stu_name=#{stuName}
+            </when>
+
+            <when test="age !='' and age!=null ">
+                age=#{age}
+            </when>
+            <otherwise>
+                sid=1
+            </otherwise>
+        </choose>
+    </select>
+
+
+
+    <!-- int deleteMoreStudent(@Param("sids") Integer[] sids);-->
+    <delete id="deleteMoreStudent">
+        delete from student where
+
+            <foreach collection="sids" item="sid" separator="or">
+               sid= #{sid}
+            </foreach>
+
+
+    </delete>
+
+
+    <sql id="class1">
+        student
+    </sql>
+
+
+    <!--int insertStudnet(List<Student> list);-->
+    <insert id="insertStudnet">
+        insert into <include refid="class1"/>
+
+         <foreach collection="list" separator="," item="student" open="values" >
+            (null, #{student.stuName} ,#{student.age} ,#{student.sex},#{student.tel},null)
+         </foreach>
+
+    </insert>
+
+
+</mapper>

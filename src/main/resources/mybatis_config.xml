@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="mybatis.properties"></properties>
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <package name="com.wfs.pojo"/><!--通过设置该别名使得XXXMapper.xml文件中的resultType可以直接使用类名（不区分大小写）    还可以使用注解@Alias给该包下面的某个类设置单独的别名，一旦设置别名，那么XXXMapper中的resultType必须为单独设置的别名-->
+    </typeAliases>
+
+<plugins><!--设置分页插件-->
+    <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+</plugins>
+
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+
+
+
+    </environments>
+
+    <mappers>
+
+        <package name="com.wfs.mapper"/>
+
+
+
+    </mappers>
+</configuration>

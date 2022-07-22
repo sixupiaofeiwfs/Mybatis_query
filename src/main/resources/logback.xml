@@ -1,0 +1,20 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern><!--日志格式  时间 线程（主线程或其他线程名） 级别  类名（100个字符以内）  日志信息-->
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{100} - %msg%n
+            </pattern>
+        </encoder>
+
+    </appender>
+
+    <logger name="com.wfs.mapper" level="debug"><!--设置特殊的级别，name的值可以为包名也可以为类名，level代表设置当前包或类的级别  即使默认级别为error，此包或此类的debug级别的日志还是会打印-->
+
+    </logger>
+
+    <root level="error"> <!--设置默认的级别  error级别以下的不输出-->
+        <appender-ref ref="STDOUT"/>
+
+    </root>
+
+</configuration>
